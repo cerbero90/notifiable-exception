@@ -16,10 +16,12 @@ trait Notifies
      *
      * @return void
      */
-    public function notify(): void
+    public function notify()
     {
         $defaultRoutes = config('notifiable_exception.default_routes');
         $routes = array_merge_recursive($defaultRoutes, $this->getAdditionalRoutes());
+
+        /** @var \Cerbero\LaravelNotifiableException\Notifiable $this */
         $notification = new ErrorOccurred($this);
 
         foreach ($routes as $channel => $routes) {
@@ -34,7 +36,7 @@ trait Notifies
      *
      * @return array
      */
-    protected function getAdditionalRoutes(): array
+    protected function getAdditionalRoutes()
     {
         return [];
     }
@@ -44,7 +46,7 @@ trait Notifies
      *
      * @return array
      */
-    public function getMessagesByChannel(): array
+    public function getMessagesByChannel()
     {
         return [];
     }
@@ -54,7 +56,7 @@ trait Notifies
      *
      * @return array
      */
-    public function getCustomChannels(): array
+    public function getCustomChannels()
     {
         return [];
     }

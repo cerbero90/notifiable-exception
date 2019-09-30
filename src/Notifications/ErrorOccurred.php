@@ -65,7 +65,7 @@ class ErrorOccurred extends Notification implements ShouldQueue
      * @return mixed
      * @throws \RuntimeException
      */
-    public function __call(string $name, array $parameters)
+    public function __call($name, $parameters)
     {
         if (substr($name, 0, 2) !== 'to') {
             return;

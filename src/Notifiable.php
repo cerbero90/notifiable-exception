@@ -15,19 +15,19 @@ interface Notifiable extends Throwable
      *
      * @return void
      */
-    public function notify(): void;
+    public function notify();
 
     /**
      * Retrieve the message for each channel keyed by the channel alias
      *
      * @return array
      */
-    public function getMessagesByChannel(): array;
+    public function getMessagesByChannel();
 
     /**
      * Retrieve the custom channel class names keyed by the channel alias
      *
      * @return array
      */
-    public function getCustomChannels(): array;
+    public function getCustomChannels();
 }

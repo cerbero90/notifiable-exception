@@ -141,7 +141,7 @@ class NotifiableExceptionTest extends TestCase
 
 class DummyNotifiableException extends NotifiableException
 {
-    protected function getAdditionalRoutes(): array
+    protected function getAdditionalRoutes()
     {
         return [
             'mail' => 'custom1',
@@ -149,7 +149,7 @@ class DummyNotifiableException extends NotifiableException
         ];
     }
 
-    public function getMessagesByChannel(): array
+    public function getMessagesByChannel()
     {
         return [
             'mail' => 'foo',
@@ -157,7 +157,7 @@ class DummyNotifiableException extends NotifiableException
         ];
     }
 
-    public function getCustomChannels(): array
+    public function getCustomChannels()
     {
         return [
             'slack' => 'baz',
