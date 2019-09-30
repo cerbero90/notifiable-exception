@@ -2,13 +2,11 @@
 
 namespace Cerbero\LaravelNotifiableException;
 
-use Throwable;
-
 /**
  * Interface for notifiable exceptions.
  *
  */
-interface Notifiable extends Throwable
+interface Notifiable
 {
     /**
      * Notify the current exception.
