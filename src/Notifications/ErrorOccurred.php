@@ -52,7 +52,7 @@ class ErrorOccurred extends Notification implements ShouldQueue
         // if there is a custom channel associated with the channel alias
         // add custom channel to delivery channels, otherwise add the alias directly
         foreach ($aliases as $alias) {
-            $channels[] = $this->customChannels[$alias] ?? $alias;
+            $channels[] = isset($this->customChannels[$alias]) ? $this->customChannels[$alias] : $alias;
         }
 
         return $channels;
