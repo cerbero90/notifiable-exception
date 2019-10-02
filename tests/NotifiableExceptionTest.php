@@ -2,6 +2,7 @@
 
 namespace Cerbero\LaravelNotifiableException;
 
+use Cerbero\LaravelNotifiableException\Exceptions\NotifiableException;
 use Cerbero\LaravelNotifiableException\Notifications\ErrorOccurred;
 use Cerbero\LaravelNotifiableException\Providers\LaravelNotifiableExceptionServiceProvider;
 use Exception;
@@ -122,6 +123,25 @@ class NotifiableExceptionTest extends TestCase
     /**
      * @test
      */
+    public function failsInvokingNotExistingMethods()
+    {
+        $this->assertExceptionNotification(new DummyNotifiableException, function (
+            ErrorOccurred $notification,
+            AnonymousNotifiable $notified
+        ) {
+            try {
+                $notification->methodNotHandledDynamically();
+                $this->fail('An exception was expected as a method not handled dynamically was invoked');
+            } catch (Exception $e) {
+                $this->assertInstanceOf('BadMethodCallException', $e);
+                $this->assertSame('Call to undefined method Cerbero\LaravelNotifiableException\Notifications\ErrorOccurred::methodNotHandledDynamically()', $e->getMessage());
+            }
+        });
+    }
+
+    /**
+     * @test
+     */
     public function failsIfNoMessageCanBeSentForChannel()
     {
         $this->assertExceptionNotification(new DummyNotifiableException, function (
@@ -137,7 +157,24 @@ class NotifiableExceptionTest extends TestCase
             }
         });
     }
+
+    /**
+     * @test
+     */
+    public function sendsNoNotificationsByDefault()
+    {
+        $this->doesntExpectJobs(ErrorOccurred::class);
+
+        $exception = new DefaultNotifiableException;
+        $exception->notify();
+
+        $this->assertEmpty($exception->getMessagesByChannel());
+        $this->assertEmpty($exception->getCustomChannels());
+    }
 }
+
+class DefaultNotifiableException extends NotifiableException
+{ }
 
 class DummyNotifiableException extends NotifiableException
 {
