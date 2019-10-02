@@ -1,7 +1,9 @@
 <?php
 
-namespace Cerbero\LaravelNotifiableException;
+namespace Cerbero\LaravelNotifiableException\Exceptions;
 
+use Cerbero\LaravelNotifiableException\Notifiable;
+use Cerbero\LaravelNotifiableException\Notifies;
 use Exception;
 
 /**
