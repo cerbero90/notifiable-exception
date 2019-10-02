@@ -2,9 +2,6 @@
 
 namespace Cerbero\LaravelNotifiableException\Providers;
 
-use Cerbero\ExceptionHandler\Providers\ExceptionHandlerServiceProvider;
-use Cerbero\LaravelNotifiableException\Notifiable;
-use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Support\ServiceProvider;
 
 /**
@@ -13,22 +10,6 @@ use Illuminate\Support\ServiceProvider;
  */
 class LaravelNotifiableExceptionServiceProvider extends ServiceProvider
 {
-    /**
-     * Register the application services.
-     *
-     * @return void
-     */
-    public function register()
-    {
-        // register service provider to add custom handlers to Laravel exception handler
-        $this->app->register(ExceptionHandlerServiceProvider::class);
-
-        // register custom handler to notify notifiable exceptions
-        $this->app->make(ExceptionHandler::class)->reporter(function (Notifiable $e) {
-            $e->notify();
-        });
-    }
-
     /**
      * Bootstrap the application services.
      *

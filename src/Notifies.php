@@ -12,11 +12,21 @@ use Illuminate\Notifications\AnonymousNotifiable;
 trait Notifies
 {
     /**
+     * Define how the current exception should be reported by the exception handler
+     *
+     * @return void
+     */
+    public function report()
+    {
+        $this->notify();
+    }
+
+    /**
      * Notify the current exception.
      *
      * @return void
      */
-    public function notify()
+    public function notify(): void
     {
         $defaultRoutes = config('notifiable_exception.default_routes');
         $routes = array_merge_recursive($defaultRoutes, $this->getAdditionalRoutes());
@@ -36,7 +46,7 @@ trait Notifies
      *
      * @return array
      */
-    protected function getAdditionalRoutes()
+    protected function getAdditionalRoutes(): array
     {
         return [];
     }
@@ -46,7 +56,7 @@ trait Notifies
      *
      * @return array
      */
-    public function getMessagesByChannel()
+    public function getMessagesByChannel(): array
     {
         return [];
     }
@@ -56,7 +66,7 @@ trait Notifies
      *
      * @return array
      */
-    public function getCustomChannels()
+    public function getCustomChannels(): array
     {
         return [];
     }

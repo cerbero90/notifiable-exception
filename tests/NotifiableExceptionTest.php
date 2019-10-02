@@ -47,7 +47,9 @@ class NotifiableExceptionTest extends TestCase
             ],
         ];
 
-        $this->assertExceptionNotification(new DummyNotifiableException, function (
+        $exception = new DummyNotifiableException;
+
+        $this->assertExceptionNotification($exception, function (
             ErrorOccurred $notification,
             AnonymousNotifiable $notified
         ) use ($expectedRoutes) {
@@ -56,6 +58,8 @@ class NotifiableExceptionTest extends TestCase
                 $this->assertContains($route, (array) $expectedRoutes[$channel]);
             }
         });
+
+        $exception->notify();
     }
 
     /**
@@ -85,8 +89,42 @@ class NotifiableExceptionTest extends TestCase
                 $callback($notification, $notified);
             }
         });
+    }
 
-        $exception->notify();
+    /**
+     * @test
+     */
+    public function notifiesExceptionInDefaultAndAdditionalRoutesWhenReporting()
+    {
+        $this->app->make('config')->set('notifiable_exception.default_routes', [
+            'mail' => 'default1',
+            'slack' => 'default2',
+        ]);
+
+        $expectedRoutes = [
+            'mail' => [
+                'default1',
+                'custom1',
+            ],
+            'slack' => [
+                'default2',
+                'custom2',
+            ],
+        ];
+
+        $exception = new DummyNotifiableException;
+
+        $this->assertExceptionNotification($exception, function (
+            ErrorOccurred $notification,
+            AnonymousNotifiable $notified
+        ) use ($expectedRoutes) {
+            foreach ($notified->routes as $channel => $route) {
+                $this->assertContains($channel, array_keys($expectedRoutes));
+                $this->assertContains($route, (array) $expectedRoutes[$channel]);
+            }
+        });
+
+        $exception->report();
     }
 
     /**
@@ -94,13 +132,17 @@ class NotifiableExceptionTest extends TestCase
      */
     public function sendsDifferentMessagesDependingOnChannel()
     {
-        $this->assertExceptionNotification(new DummyNotifiableException, function (
+        $exception = new DummyNotifiableException;
+
+        $this->assertExceptionNotification($exception, function (
             ErrorOccurred $notification,
             AnonymousNotifiable $notified
         ) {
             $this->assertSame('foo', $notification->toMail());
             $this->assertSame('bar', $notification->toSlack());
         });
+
+        $exception->notify();
     }
 
     /**
@@ -108,7 +150,9 @@ class NotifiableExceptionTest extends TestCase
      */
     public function deliversToCustomChannels()
     {
-        $this->assertExceptionNotification(new DummyNotifiableException, function (
+        $exception = new DummyNotifiableException;
+
+        $this->assertExceptionNotification($exception, function (
             ErrorOccurred $notification,
             AnonymousNotifiable $notified
         ) {
@@ -118,6 +162,8 @@ class NotifiableExceptionTest extends TestCase
             $this->assertContains('mail', $deliveryChannels);
             $this->assertContains('baz', $deliveryChannels);
         });
+
+        $exception->notify();
     }
 
     /**
@@ -125,7 +171,9 @@ class NotifiableExceptionTest extends TestCase
      */
     public function failsInvokingNotExistingMethods()
     {
-        $this->assertExceptionNotification(new DummyNotifiableException, function (
+        $exception = new DummyNotifiableException;
+
+        $this->assertExceptionNotification($exception, function (
             ErrorOccurred $notification,
             AnonymousNotifiable $notified
         ) {
@@ -137,6 +185,8 @@ class NotifiableExceptionTest extends TestCase
                 $this->assertSame('Call to undefined method Cerbero\LaravelNotifiableException\Notifications\ErrorOccurred::methodNotHandledDynamically()', $e->getMessage());
             }
         });
+
+        $exception->notify();
     }
 
     /**
@@ -144,7 +194,9 @@ class NotifiableExceptionTest extends TestCase
      */
     public function failsIfNoMessageCanBeSentForChannel()
     {
-        $this->assertExceptionNotification(new DummyNotifiableException, function (
+        $exception = new DummyNotifiableException;
+
+        $this->assertExceptionNotification($exception, function (
             ErrorOccurred $notification,
             AnonymousNotifiable $notified
         ) {
@@ -156,6 +208,8 @@ class NotifiableExceptionTest extends TestCase
                 $this->assertSame('The channel [unknown] does not have any message to notify.', $e->getMessage());
             }
         });
+
+        $exception->notify();
     }
 
     /**
@@ -178,7 +232,7 @@ class DefaultNotifiableException extends NotifiableException
 
 class DummyNotifiableException extends NotifiableException
 {
-    protected function getAdditionalRoutes()
+    protected function getAdditionalRoutes(): array
     {
         return [
             'mail' => 'custom1',
@@ -186,7 +240,7 @@ class DummyNotifiableException extends NotifiableException
         ];
     }
 
-    public function getMessagesByChannel()
+    public function getMessagesByChannel(): array
     {
         return [
             'mail' => 'foo',
@@ -194,7 +248,7 @@ class DummyNotifiableException extends NotifiableException
         ];
     }
 
-    public function getCustomChannels()
+    public function getCustomChannels(): array
     {
         return [
             'slack' => 'baz',
