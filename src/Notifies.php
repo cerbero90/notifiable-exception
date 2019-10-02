@@ -26,7 +26,7 @@ trait Notifies
      *
      * @return void
      */
-    public function notify(): void
+    public function notify()
     {
         $defaultRoutes = config('notifiable_exception.default_routes');
         $routes = array_merge_recursive($defaultRoutes, $this->getAdditionalRoutes());
