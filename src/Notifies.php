@@ -24,8 +24,8 @@ trait Notifies
         /** @var \Cerbero\LaravelNotifiableException\Notifiable $this */
         $notification = new ErrorOccurred($this);
 
-        foreach ($routes as $channel => $routes) {
-            foreach ((array) $routes as $route) {
+        foreach ($routes as $channel => $channelRoutes) {
+            foreach ((array) $channelRoutes as $route) {
                 (new AnonymousNotifiable)->route($channel, $route)->notify($notification);
             }
         }
