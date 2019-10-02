@@ -2,6 +2,7 @@
 
 namespace Cerbero\LaravelNotifiableException\Notifications;
 
+use BadMethodCallException;
 use Cerbero\LaravelNotifiableException\Notifiable;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
@@ -63,12 +64,13 @@ class ErrorOccurred extends Notification implements ShouldQueue
      * @param string $name
      * @param array $parameters
      * @return mixed
+     * @throws \BadMethodCallException
      * @throws \RuntimeException
      */
     public function __call($name, $parameters)
     {
         if (substr($name, 0, 2) !== 'to') {
-            return;
+            throw new BadMethodCallException(sprintf('Call to undefined method %s::%s()', static::class, $name));
         }
 
         $channel = strtolower(substr($name, 2));
