@@ -205,7 +205,7 @@ class NotifiableExceptionTest extends TestCase
                 $this->fail('An exception was expected as there are no messages to notify for the channel [unknown]');
             } catch (Exception $e) {
                 $this->assertInstanceOf('RuntimeException', $e);
-                $this->assertSame('The channel [unknown] does not have any message to notify.', $e->getMessage());
+                $this->assertSame('No message to send to the channel [unknown].', $e->getMessage());
             }
         });
 
