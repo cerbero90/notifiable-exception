@@ -8,7 +8,7 @@ return [
     |
     | The routes used by default to notify exceptions. Every channel can define
     | a list of routes always notified when a notifiable exception is thrown.
-    | Additional ad-hoc routes might be specified in notifiable exceptions.
+    | Additional ad hoc routes might be specified in notifiable exceptions.
     |
     */
     'default_routes' => [

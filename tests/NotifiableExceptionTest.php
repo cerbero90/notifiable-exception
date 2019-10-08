@@ -1,10 +1,10 @@
 <?php
 
-namespace Cerbero\LaravelNotifiableException;
+namespace Cerbero\NotifiableException;
 
-use Cerbero\LaravelNotifiableException\Exceptions\NotifiableException;
-use Cerbero\LaravelNotifiableException\Notifications\ErrorOccurred;
-use Cerbero\LaravelNotifiableException\Providers\LaravelNotifiableExceptionServiceProvider;
+use Cerbero\NotifiableException\Exceptions\NotifiableException;
+use Cerbero\NotifiableException\Notifications\ErrorOccurred;
+use Cerbero\NotifiableException\Providers\NotifiableExceptionServiceProvider;
 use Exception;
 use Illuminate\Notifications\AnonymousNotifiable;
 use Orchestra\Testbench\TestCase;
@@ -23,7 +23,7 @@ class NotifiableExceptionTest extends TestCase
      */
     protected function getPackageProviders($app)
     {
-        return [LaravelNotifiableExceptionServiceProvider::class];
+        return [NotifiableExceptionServiceProvider::class];
     }
 
     /**
@@ -65,7 +65,7 @@ class NotifiableExceptionTest extends TestCase
     /**
      * Specify the routes where the given exception is expected to be notified.
      *
-     * @param \Cerbero\LaravelNotifiableException\Notifiable $exception
+     * @param \Cerbero\NotifiableException\Notifiable $exception
      * @param callable $callback
      * @return void
      */
@@ -182,7 +182,7 @@ class NotifiableExceptionTest extends TestCase
                 $this->fail('An exception was expected as a method not handled dynamically was invoked');
             } catch (Exception $e) {
                 $this->assertInstanceOf('BadMethodCallException', $e);
-                $this->assertSame('Call to undefined method Cerbero\LaravelNotifiableException\Notifications\ErrorOccurred::methodNotHandledDynamically()', $e->getMessage());
+                $this->assertSame('Call to undefined method Cerbero\NotifiableException\Notifications\ErrorOccurred::methodNotHandledDynamically()', $e->getMessage());
             }
         });
 
@@ -222,7 +222,7 @@ class NotifiableExceptionTest extends TestCase
         $exception = new DefaultNotifiableException;
         $exception->notify();
 
-        $this->assertEmpty($exception->getMessagesByChannel());
+        $this->assertEmpty($exception->getMessages());
         $this->assertEmpty($exception->getCustomChannels());
     }
 }
@@ -232,7 +232,7 @@ class DefaultNotifiableException extends NotifiableException
 
 class DummyNotifiableException extends NotifiableException
 {
-    protected function getAdditionalRoutes(): array
+    protected function getCustomRoutes(): array
     {
         return [
             'mail' => 'custom1',
@@ -240,7 +240,7 @@ class DummyNotifiableException extends NotifiableException
         ];
     }
 
-    public function getMessagesByChannel(): array
+    public function getMessages(): array
     {
         return [
             'mail' => 'foo',

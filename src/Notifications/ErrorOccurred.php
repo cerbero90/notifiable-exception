@@ -1,9 +1,9 @@
 <?php
 
-namespace Cerbero\LaravelNotifiableException\Notifications;
+namespace Cerbero\NotifiableException\Notifications;
 
 use BadMethodCallException;
-use Cerbero\LaravelNotifiableException\Notifiable;
+use Cerbero\NotifiableException\Notifiable;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -18,7 +18,7 @@ class ErrorOccurred extends Notification implements ShouldQueue
      *
      * @var array
      */
-    protected $messagesByChannel;
+    protected $messages;
 
     /**
      * The custom channel class names keyed by the channel alias.
@@ -30,11 +30,11 @@ class ErrorOccurred extends Notification implements ShouldQueue
     /**
      * Set the dependencies.
      *
-     * @param \Cerbero\LaravelNotifiableException\Notifiable $exception
+     * @param \Cerbero\NotifiableException\Notifiable $exception
      */
     public function __construct(Notifiable $exception)
     {
-        $this->messagesByChannel = $exception->getMessagesByChannel();
+        $this->messages = $exception->getMessages();
         $this->customChannels = $exception->getCustomChannels();
     }
 
@@ -47,12 +47,12 @@ class ErrorOccurred extends Notification implements ShouldQueue
     public function via($notifiable)
     {
         $channels = [];
-        $aliases = array_keys($this->messagesByChannel);
+        $aliases = array_keys($this->messages);
 
         // if there is a custom channel associated with the channel alias
         // add custom channel to delivery channels, otherwise add the alias directly
         foreach ($aliases as $alias) {
-            $channels[] = isset($this->customChannels[$alias]) ? $this->customChannels[$alias] : $alias;
+            $channels[] = $this->customChannels[$alias] ?? $alias;
         }
 
         return $channels;
@@ -75,10 +75,10 @@ class ErrorOccurred extends Notification implements ShouldQueue
 
         $channel = strtolower(substr($name, 2));
 
-        if (isset($this->messagesByChannel[$channel])) {
-            return $this->messagesByChannel[$channel];
+        if (isset($this->messages[$channel])) {
+            return $this->messages[$channel];
         }
 
-        throw new RuntimeException("The channel [$channel] does not have any message to notify.");
+        throw new RuntimeException("No message to send to the channel [$channel].");
     }
 }

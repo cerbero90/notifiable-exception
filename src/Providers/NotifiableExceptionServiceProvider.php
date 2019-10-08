@@ -1,14 +1,14 @@
 <?php
 
-namespace Cerbero\LaravelNotifiableException\Providers;
+namespace Cerbero\NotifiableException\Providers;
 
 use Illuminate\Support\ServiceProvider;
 
 /**
- * The Laravel notifiable exception service provider.
+ * The notifiable exception service provider.
  *
  */
-class LaravelNotifiableExceptionServiceProvider extends ServiceProvider
+class NotifiableExceptionServiceProvider extends ServiceProvider
 {
     /**
      * Bootstrap the application services.

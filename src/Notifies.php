@@ -1,8 +1,8 @@
 <?php
 
-namespace Cerbero\LaravelNotifiableException;
+namespace Cerbero\NotifiableException;
 
-use Cerbero\LaravelNotifiableException\Notifications\ErrorOccurred;
+use Cerbero\NotifiableException\Notifications\ErrorOccurred;
 use Illuminate\Notifications\AnonymousNotifiable;
 
 /**
@@ -29,24 +29,26 @@ trait Notifies
     public function notify()
     {
         $defaultRoutes = config('notifiable_exception.default_routes');
-        $routes = array_merge_recursive($defaultRoutes, $this->getAdditionalRoutes());
+        $routes = array_merge_recursive($defaultRoutes, $this->getCustomRoutes());
 
-        /** @var \Cerbero\LaravelNotifiableException\Notifiable $this */
+        /** @var \Cerbero\NotifiableException\Notifiable $this */
         $notification = new ErrorOccurred($this);
 
         foreach ($routes as $channel => $channelRoutes) {
-            foreach ((array) $channelRoutes as $route) {
+            $channelRoutes = array_unique((array) $channelRoutes);
+
+            foreach ($channelRoutes as $route) {
                 (new AnonymousNotifiable)->route($channel, $route)->notify($notification);
             }
         }
     }
 
     /**
-     * Retrieve the additional notification routes
+     * Retrieve the custom notification routes
      *
      * @return array
      */
-    protected function getAdditionalRoutes(): array
+    protected function getCustomRoutes(): array
     {
         return [];
     }
@@ -56,7 +58,7 @@ trait Notifies
      *
      * @return array
      */
-    public function getMessagesByChannel(): array
+    public function getMessages(): array
     {
         return [];
     }

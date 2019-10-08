@@ -1,5 +1,5 @@
 {
-    "name": "cerbero/laravel-notifiable-exception",
+    "name": "cerbero/notifiable-exception",
     "type": "library",
     "description": "Laravel package to send notifications when some exceptions are thrown.",
     "keywords": [
@@ -7,7 +7,7 @@
         "notifications",
         "exceptions"
     ],
-    "homepage": "https://github.com/cerbero90/laravel-notifiable-exception",
+    "homepage": "https://github.com/cerbero90/notifiable-exception",
     "license": "MIT",
     "authors": [
         {
@@ -32,12 +32,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Cerbero\\LaravelNotifiableException\\": "src"
+            "Cerbero\\NotifiableException\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Cerbero\\LaravelNotifiableException\\": "tests"
+            "Cerbero\\NotifiableException\\": "tests"
         }
     },
     "scripts": {
@@ -51,7 +51,7 @@
         },
         "laravel": {
             "providers": [
-                "Cerbero\\LaravelNotifiableException\\Providers\\LaravelNotifiableExceptionServiceProvider"
+                "Cerbero\\NotifiableException\\Providers\\NotifiableExceptionServiceProvider"
             ]
         }
     },

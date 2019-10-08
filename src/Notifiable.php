@@ -1,6 +1,6 @@
 <?php
 
-namespace Cerbero\LaravelNotifiableException;
+namespace Cerbero\NotifiableException;
 
 use Throwable;
 
@@ -22,7 +22,7 @@ interface Notifiable extends Throwable
      *
      * @return array
      */
-    public function getMessagesByChannel(): array;
+    public function getMessages(): array;
 
     /**
      * Retrieve the custom channel class names keyed by the channel alias
