@@ -2,7 +2,7 @@
 
 Contributions are **welcome** and will be fully **credited**.
 
-We accept contributions via Pull Requests on [Github](https://github.com/cerbero90/laravel-notifiable-exception).
+We accept contributions via Pull Requests on [Github](https://github.com/cerbero90/notifiable-exception).
 
 
 ## Pull Requests
