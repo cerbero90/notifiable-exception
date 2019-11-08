@@ -28,11 +28,9 @@ trait Notifies
      */
     public function notify()
     {
-        $defaultRoutes = config('notifiable_exception.default_routes');
-        $routes = array_merge_recursive($defaultRoutes, $this->getCustomRoutes());
-
         /** @var \Cerbero\NotifiableException\Notifiable $this */
         $notification = new ErrorOccurred($this);
+        $routes = $this->getRoutesToNotify();
 
         foreach ($routes as $channel => $channelRoutes) {
             $channelRoutes = array_unique((array) $channelRoutes);
@@ -44,7 +42,33 @@ trait Notifies
     }
 
     /**
-     * Retrieve the custom notification routes
+     * Retrieve all the routes to send notification to.
+     *
+     * @return array
+     */
+    protected function getRoutesToNotify(): array
+    {
+        if ($this->overridesRoutes()) {
+            return $this->getCustomRoutes();
+        }
+
+        $defaultRoutes = config('notifiable_exception.default_routes');
+
+        return array_merge_recursive($defaultRoutes, $this->getCustomRoutes());
+    }
+
+    /**
+     * Determine whether the current exception routes should override the default ones.
+     *
+     * @return bool
+     */
+    protected function overridesRoutes(): bool
+    {
+        return false;
+    }
+
+    /**
+     * Retrieve the custom notification routes keyed by the channel alias
      *
      * @return array
      */
