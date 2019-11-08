@@ -94,6 +94,40 @@ class NotifiableExceptionTest extends TestCase
     /**
      * @test
      */
+    public function notifiesExceptionOnlyInCustomRoutesWhenOverridingRoutes()
+    {
+        $this->app->make('config')->set('notifiable_exception.default_routes', [
+            'mail' => 'default1',
+            'slack' => 'default2',
+        ]);
+
+        $expectedRoutes = [
+            'mail' => [
+                'custom1',
+            ],
+            'slack' => [
+                'custom2',
+            ],
+        ];
+
+        $exception = new OverridingDummyNotifiableException;
+
+        $this->assertExceptionNotification($exception, function (
+            ErrorOccurred $notification,
+            AnonymousNotifiable $notified
+        ) use ($expectedRoutes) {
+            foreach ($notified->routes as $channel => $route) {
+                $this->assertContains($channel, array_keys($expectedRoutes));
+                $this->assertContains($route, (array) $expectedRoutes[$channel]);
+            }
+        });
+
+        $exception->notify();
+    }
+
+    /**
+     * @test
+     */
     public function notifiesExceptionInDefaultAndAdditionalRoutesWhenReporting()
     {
         $this->app->make('config')->set('notifiable_exception.default_routes', [
@@ -253,5 +287,13 @@ class DummyNotifiableException extends NotifiableException
         return [
             'slack' => 'baz',
         ];
+    }
+}
+
+class OverridingDummyNotifiableException extends DummyNotifiableException
+{
+    protected function overridesRoutes(): bool
+    {
+        return true;
     }
 }
