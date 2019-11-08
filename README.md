@@ -84,7 +84,16 @@ class UrgentException extends NotifiableException
     }
 }
 ```
-In the example above, the phone number `+1 555-666-6666` will receive an SMS whenever `UrgentException` is thrown.
+In the example above, the phone number `+1 555-666-6666` will receive an SMS whenever `UrgentException` is thrown, alongside with the default routes specified in the configuration.
+
+If we want an exception to notify only its custom routes while ignoring the default ones, we can instruct the method `overridesRoutes()` to do so:
+
+``` php
+protected function overridesRoutes(): bool
+{
+    return true;
+}
+```
 
 Messages to send can be customized per channel by overriding the method `getMessages()`:
 ``` php
